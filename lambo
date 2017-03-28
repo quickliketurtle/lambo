@@ -43,7 +43,7 @@ editconfig()
         echo "Config does not exist; creating."
 
         makeconfig
-        return 
+        return
     fi
 
     edit ~/.lambo/config
@@ -109,7 +109,7 @@ makeafter()
 
 # To add a git commit after given modifications
 # echo "Committing after modifications to Git"
-# git add . 
+# git add .
 # git commit -am "Initialize Composer dependencies and additional files."
 ' > ~/.lambo/after
 
@@ -118,13 +118,13 @@ makeafter()
 
 edit()
 {
-    ## Open with best editor 
+    ## Open with best editor
     if [[ $CODEEDITOR ]]; then
-        $CODEEDITOR $1 
+        $CODEEDITOR $1
     elif [[ $EDITOR ]]; then
-        $EDITOR $1 
+        $EDITOR $1
     else
-        vim $1 
+        vim $1
     fi
 }
 
@@ -297,11 +297,11 @@ git commit -m "$MESSAGE"
 # Update .env to point to this database with `root` username and blank pw,
 # like Mac MySQL defaults, and appropriate domain
 PROJECTURL="http://$PROJECTNAME.$TLD"
-sedCommands=(
-    "/DB_DATABASE/s/homestead/$PROJECTNAME/"
-    '/DB_USERNAME/s/homestead/root/'
-    '/DB_PASSWORD/s/secret//'
-    "/APP_URL/s/localhost/$PROJECTNAME\.$TLD/"
+perlCommands=(
+    "s/(DB_DATABASE=)(.*)/\1$PROJECTNAME/g"
+    's/(DB_USERNAME=)(.*)/\1root/g'
+    's/(DB_PASSWORD=)(.*)/\1/g'
+    "s/(APP_URL=)(.*)/\1$PROJECTNAME\.$TLD/g"
 )
 
 if [[ "$LINK" = true ]]; then
@@ -318,9 +318,6 @@ if [[ "$(uname)" == "Darwin" ]]; then
         open "$PROJECTURL"
     fi
 elif [[ "$(expr substr $(uname -s) 1 5)" == "Linux" ]]; then
-    for sedCommand in "${sedCommands[@]}"; do
-        sed -i "$sedCommand" .env
-    done
     xdg-open "$PROJECTURL"
 fi
 
