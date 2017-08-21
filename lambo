@@ -6,6 +6,9 @@ green=$(tput setaf 2)
 orange=$(tput setaf 3)
 reset=$(tput sgr0)
 
+## Terminal Editors
+TERMINAL_EDITORS=("vim" "vi" "nano" "pico" "ed" "emacs" "nvim")
+
 ## Init functions
 showhelp()
 {
@@ -35,6 +38,11 @@ showhelp()
     echo "${green}  -b, --browser \"browser path\"${reset}  Opens site in specified browser"
     echo "${green}  -l, --link${reset}                    Creates a Valet link to the project directory"
     quit
+}
+
+isterminaleditor () {
+    for EDITOR in $TERMINAL_EDITORS; do [[ "$EDITOR" == "$CODEEDITOR" ]] && return 0; done
+    return 1
 }
 
 editconfig()
@@ -144,6 +152,8 @@ quit()
     trap : 0
     exit 0
 }
+
+
 
 ## Set up error handling
 trap 'abort' 0
@@ -274,7 +284,9 @@ fi
 cd "$PROJECTNAME" || exit
 
 if [[ "$CODEEDITOR" != "" ]]; then
-    $CODEEDITOR .
+    if ! isterminaleditor; then
+       $CODEEDITOR .
+   fi
 fi
 
 if [[ "$NODE" = true ]]; then
@@ -332,6 +344,12 @@ if [[ -f ~/.lambo/after ]]; then
     source ~/.lambo/after
 fi
 
+if [[ "$CODEEDITOR" != "" ]]; then
+    if isterminaleditor; then
+       $CODEEDITOR .
+   fi
+fi
+
 if [[ "$SHELL" != "" ]]; then
     exec "$SHELL"
 
@@ -347,6 +365,8 @@ else
 
     You're ready to go! Remember to cd into '${green}$prettyPath${reset}' before you start editing."
 fi
+
+
 
 # End script; disable error handling
 trap : 0
