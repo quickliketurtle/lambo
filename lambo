@@ -323,10 +323,11 @@ if [[ "$LINK" = true ]]; then
     valet link "$PROJECTNAME"
 fi
 
+for perlCommand in "${perlCommands[@]}"; do
+    perl -pi -e "$perlCommand" ".env"
+done
+
 if [[ "$(uname)" == "Darwin" ]]; then
-    for sedCommand in "${sedCommands[@]}"; do
-        sed -i '' "$sedCommand" .env
-    done
     if [[ "$BROWSER" != "" ]]; then
         open -a "$BROWSER" "$PROJECTURL"
     else
